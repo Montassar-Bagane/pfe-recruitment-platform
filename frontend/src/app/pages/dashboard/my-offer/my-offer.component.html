@@ -1,0 +1,79 @@
+<h1>My Offers</h1>
+<div class="container">
+  <div *ngFor="let job of jobListings" class="job-card">
+    <nz-card nzTitle="{{ job.company }}">
+      <p><strong>Title</strong> {{ job.title }}</p>
+      <p><strong>Type</strong> {{ job.type }}</p>
+      <p><strong>Salary</strong> {{ job.salary }} {{job.unit}}/{{job.timeType}}</p>
+      <p><strong>Description</strong> {{ job.description }}</p>
+      <p><strong>Applications:</strong> {{job.submit}}</p>
+      <div class="card-buttons">
+        <button nz-button nzType="primary" (click)="editJob(job.id!)">Edit</button>
+        <button nz-button nzType="primary" nzDanger (click)="confirmDelete(job.id!)" >Delete</button>
+        <button nz-button nzType="default" [routerLink]="['/dashboard/details', job.id]">View</button>
+      </div>
+    </nz-card>
+  </div>
+</div>
+<nz-modal [(nzVisible)]="editModalVisible" nzTitle="Edit Job" (nzOnCancel)="cancelEdit()" (nzOnOk)="saveEdit()">
+  <ng-container *nzModalContent>
+    <form [formGroup]="editForm" nz-form nzLayout="vertical">
+      <nz-form-item>
+        <nz-form-label [nzFor]="'editEntreprise'">Entreprise</nz-form-label>
+        <nz-form-control>
+          <input nz-input id="editEntreprise" formControlName="company" required />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzFor]="'editTitle'">Title</nz-form-label>
+        <nz-form-control>
+          <input nz-input id="editTitle" formControlName="title" required />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzFor]="'type'">Type</nz-form-label>
+        <nz-form-control>
+          <nz-select formControlName="type" id="type">
+            <nz-option nzValue="Full-time" nzLabel="Full-time"></nz-option>
+            <nz-option nzValue="Part-time" nzLabel="Part-time"></nz-option>
+            <nz-option nzValue="Contract" nzLabel="Contract"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzFor]="'editSalaire'">Salary</nz-form-label>
+        <nz-form-control>
+          <input nz-input id="editSalaire" formControlName="salary" required />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzFor]="'unit'">Unit</nz-form-label>
+        <nz-form-control>
+          <input nz-input formControlName="unit" id="unit" />
+        </nz-form-control>
+      </nz-form-item>
+  
+      <nz-form-item>
+        <nz-form-label [nzFor]="'timeType'">Time Type</nz-form-label>
+        <nz-form-control>
+          <nz-select formControlName="timeType" id="timeType">
+            <nz-option nzValue="year" nzLabel="Year"></nz-option>
+            <nz-option nzValue="month" nzLabel="Month"></nz-option>
+            <nz-option nzValue="hour" nzLabel="Hour"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzFor]="'editDescription'">Description</nz-form-label>
+        <nz-form-control>
+          <textarea nz-input id="editDescription" formControlName="description" required></textarea>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </ng-container>
+</nz-modal>

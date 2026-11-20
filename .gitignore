@@ -1,0 +1,59 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Angular Build Outputs
+dist/
+.angular/
+tmp/
+out-tsc/
+bazel-out/
+
+# Java / Maven Build Outputs
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+.mvn/wrapper/maven-wrapper.jar
+
+# Eclipse / Spring Tool Suite Workspace Files
+.metadata/
+.settings/
+.project
+.classpath
+.factorypath
+*.log
+*.bak_*
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Operating System
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Application Uploads & Runtime Data
+uploads/
+/uploads/
+cv/

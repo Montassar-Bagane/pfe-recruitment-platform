@@ -1,0 +1,39 @@
+<p *ngIf="job"><strong>Id</strong> {{ job.id }}</p>
+<p *ngIf="job"><strong>Title</strong> {{ job.title }}</p>
+<p *ngIf="job"><strong>Type</strong> {{ job.type }}</p>
+<p *ngIf="job"><strong>Salary</strong> {{ job.salary }}</p>
+<p *ngIf="job"><strong>Description</strong> {{ job.description }}</p>
+<h2>Application List</h2>
+<nz-table [nzBordered]="true"  [nzData]="listSbmits" [nzScroll]="{ x: '1000px', y: '40vh' }" #middleTable nzSize="middle">
+  <thead>
+  <tr>
+    <th nzWidth="">First Name</th>
+    <th nzWidth="">Last Name</th>
+    <th nzWidth="19%">Email</th>
+    <th nzWidth="">Phone</th>
+    <th nzWidth="30%">Cover Letter</th>
+    <th nzWidth="10%">Status</th>
+    <th nzWidth="5%">CV</th>
+    <th nzWidth="">Action</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let list of listSbmits">
+    <td>{{ list.firstname }}</td>
+    <td>{{ list.lastname }}</td>
+    <td>{{ list.email }}</td>
+    <td>{{ list.phone }}</td>
+    <td>{{ list.description }}</td>
+    <td>
+      <nz-alert *ngIf="list.status === 'ACCEPTED'" nzType="success" nzMessage="Accepted"></nz-alert>
+      <nz-alert *ngIf="list.status === 'IN_PROCESS'" nzType="info" nzMessage="In Process"></nz-alert>
+      <nz-alert *ngIf="list.status === 'REFUSED'" nzType="error" nzMessage="Refused"></nz-alert>
+    </td>
+    <td><a [routerLink]="['/dashboard/cv-details', list.id]">CV</a></td>
+    <td>
+      <button nz-button nzType="primary" style="margin-bottom: 3px;" (click)="showConfirm(list.id!)" >Accept</button>
+      <button nz-button nzType="primary" (click)="showConfirm1(list.id!)" nzDanger>Refuse</button>
+    </td>
+  </tr>
+  </tbody>
+</nz-table>

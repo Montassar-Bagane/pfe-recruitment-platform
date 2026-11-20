@@ -1,0 +1,181 @@
+<h1>Profile</h1>
+<form nzLayout="vertical" nz-form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+  <nz-form-item>
+    <nz-form-label nzFor="name" nzRequired>First Name</nz-form-label>
+    <nz-form-control nzErrorTip="First Name is required." >
+      <input nz-input id="name" formControlName="firstname" type="text" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzFor="lastName" nzRequired>Last Name</nz-form-label>
+    <nz-form-control nzErrorTip="Last Name is required." >
+      <input nz-input id="lastName" formControlName="lastname" type="text" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzFor="phone" nzRequired>Phone</nz-form-label>
+    <nz-form-control nzErrorTip="Phone is required." >
+      <input nz-input id="phone" formControlName="phone" type="tel" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzFor="email" nzRequired>Email</nz-form-label>
+    <nz-form-control nzErrorTip="Email is required." >
+      <input nz-input id="email" formControlName="email" type="email" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzFor="password" >Change Password</nz-form-label>
+    <nz-form-control>
+      <input nz-input id="password" formControlName="password" type="password" (input)="checkPasswords()"/>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzFor="confirmPassword" >Confirm Password</nz-form-label>
+    <nz-form-control [nzErrorTip]="contactForm.get('confirmPassword')!.hasError('mustMatch') ? 'Passwords must match.' : ''">
+      <input nz-input id="confirmPassword" formControlName="confirmPassword" type="password" (input)="checkPasswords()"/>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <button nz-button nzType="primary" type="submit" >Update Profile</button>
+  </nz-form-item>
+</form>
+
+<div *ngIf="authority === 'CANDIDATE' ">
+<div style="width: 100%; display:flex; justify-content: space-between; margin-bottom: 10px; margin-top: 40px;">
+  <h2>Experiences</h2>
+  <button nz-button nzType="primary" (click)="openAddModal()">Add Experience</button>
+</div>
+<nz-collapse>
+  <nz-collapse-panel
+    *ngFor="let experience of Experiences"
+    [nzHeader]=" experience.title"
+  >
+    <div>
+      <p><strong>Organization</strong> {{ experience.organization }}</p>
+      <p><strong>City</strong> {{ experience.city }}</p>
+      <p><strong>Start Date</strong> {{ experience.start_date }}</p>
+      <p><strong>End Date</strong> {{ experience.end_date }}</p>
+      <p><strong>Description</strong> {{ experience.description }}</p>
+      <div class="card-buttons">
+      <button nz-button nzType="primary" (click)="openEditModal(experience)">Edit</button>
+      <button nz-button nzType="primary" nzDanger (click)="confirmDelete(experience.id!)">Delete</button>
+    </div>
+    </div>
+  </nz-collapse-panel>
+</nz-collapse>
+
+<nz-modal [(nzVisible)]="isAddModalVisible" nzTitle="Add Experience" (nzOnCancel)="handleCancelAdd()" (nzOnOk)="onSaveAdd()">
+  <ng-container *nzModalContent>
+    <form nz-form [formGroup]="editForm">
+      <nz-form-item>
+        <nz-form-label nzFor="title" nzRequired>Title</nz-form-label>
+        <nz-form-control nzErrorTip="Title is required" nzValidateStatus="editForm.controls['title'].dirty ? editForm.controls['title'].invalid ? 'error' : 'success' : null">
+          <input nz-input id="title" formControlName="title" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzFor="company" nzRequired>Organization</nz-form-label>
+        <nz-form-control nzErrorTip="Company is required" nzValidateStatus="editForm.controls['organization'].dirty ? editForm.controls['organization'].invalid ? 'error' : 'success' : null">
+          <input nz-input id="company" formControlName="organization" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzFor="countryCity" nzRequired>City</nz-form-label>
+        <nz-form-control nzErrorTip="Location is required" nzValidateStatus="editForm.controls['city'].dirty ? editForm.controls['city'].invalid ? 'error' : 'success' : null">
+          <input nz-input id="countryCity" formControlName="city" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzFor="start_at" nzRequired>Start Date</nz-form-label>
+        <nz-form-control nzErrorTip="Start date is required" nzValidateStatus="editForm.controls['start_date'].dirty ? editForm.controls['start_date'].invalid ? 'error' : 'success' : null">
+          <input nz-input type="date" id="start_at" formControlName="start_date" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzFor="end_at" nzRequired>End Date</nz-form-label>
+        <nz-form-control nzErrorTip="End date is required" nzValidateStatus="editForm.controls['end_date'].dirty ? editForm.controls['end_date'].invalid ? 'error' : 'success' : null">
+          <input nz-input type="date" id="end_at" formControlName="end_date" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzFor="description" nzRequired>Description</nz-form-label>
+        <nz-form-control nzErrorTip="Description is required" nzValidateStatus="editForm.controls['description'].dirty ? editForm.controls['description'].invalid ? 'error' : 'success' : null">
+          <textarea nz-input id="description" formControlName="description"></textarea>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </ng-container>
+</nz-modal>
+
+<nz-modal [(nzVisible)]="isEditModalVisible" nzTitle="Edit Experience" (nzOnCancel)="handleCancel()" (nzOnOk)="onSave()">
+  <ng-container *nzModalContent>
+    <form nz-form [formGroup]="editForm">
+      <nz-form-item>
+        <nz-form-label nzFor="title" nzRequired>Title</nz-form-label>
+        <nz-form-control nzErrorTip="Title is required" nzValidateStatus="editForm.controls['title'].dirty ? editForm.controls['title'].invalid ? 'error' : 'success' : null">
+          <input nz-input id="title" formControlName="title" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzFor="company" nzRequired>Organization</nz-form-label>
+        <nz-form-control nzErrorTip="Company is required" nzValidateStatus="editForm.controls['organization'].dirty ? editForm.controls['organization'].invalid ? 'error' : 'success' : null">
+          <input nz-input id="company" formControlName="organization" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzFor="countryCity" nzRequired>City</nz-form-label>
+        <nz-form-control nzErrorTip="Location is required" nzValidateStatus="editForm.controls['city'].dirty ? editForm.controls['city'].invalid ? 'error' : 'success' : null">
+          <input nz-input id="countryCity" formControlName="city" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzFor="start_at" nzRequired>Start Date</nz-form-label>
+        <nz-form-control nzErrorTip="Start date is required" nzValidateStatus="editForm.controls['start_date'].dirty ? editForm.controls['start_date'].invalid ? 'error' : 'success' : null">
+          <input nz-input type="date" id="start_at" formControlName="start_date" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzFor="end_at" nzRequired>End Date</nz-form-label>
+        <nz-form-control nzErrorTip="End date is required" nzValidateStatus="editForm.controls['end_date'].dirty ? editForm.controls['end_date'].invalid ? 'error' : 'success' : null">
+          <input nz-input type="date" id="end_at" formControlName="end_date" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzFor="description" nzRequired>Description</nz-form-label>
+        <nz-form-control nzErrorTip="Description is required" nzValidateStatus="editForm.controls['description'].dirty ? editForm.controls['description'].invalid ? 'error' : 'success' : null">
+          <textarea nz-input id="description" formControlName="description"></textarea>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </ng-container>
+</nz-modal>
+
+<h2 style="margin-top: 40px;">Skills</h2>
+<div>
+  <nz-form-label>Enter your skills</nz-form-label>
+  <input nz-input [(ngModel)]="inputContent" (keyup)="handleKeyUp($event)"/>
+  <ul>
+    <li *ngFor="let content of contentArray; index as i">
+      {{ content.name }}
+      <span (click)="removeItem(i)" style="color: red;cursor: pointer" nz-icon nzType="close-circle" nzTheme="outline"></span>
+    </li>
+  </ul>
+</div>
+</div>

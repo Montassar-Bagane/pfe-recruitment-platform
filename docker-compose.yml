@@ -1,0 +1,105 @@
+version: '3.8'
+
+services:
+  # ==========================================
+  # MySQL Database Service
+  # ==========================================
+  mysql:
+    image: mysql:8.0
+    container_name: pfe-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+      MYSQL_DATABASE: ${DB_NAME:-pfe}
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASSWORD:-root}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    networks:
+      - pfe-network
+
+  # ==========================================
+  # Spring Boot Backend API
+  # ==========================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: pfe-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-pfe}
+      DB_USERNAME: root
+      DB_PASSWORD: ${DB_PASSWORD:-root}
+      JPA_DDL_AUTO: update
+      JPA_SHOW_SQL: "false"
+      JWT_SECRET: ${JWT_SECRET:-404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+      MAIL_HOST: ${MAIL_HOST:-smtp.gmail.com}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_USERNAME: ${MAIL_USERNAME:-montasahli01@gmail.com}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-yhgh cfve jeam hqwe}
+      CORS_ORIGINS: "http://localhost,http://localhost:80,http://localhost:4200,http://127.0.0.1,http://127.0.0.1:80,http://127.0.0.1:4200"
+    ports:
+      - "8080:8080"
+    volumes:
+      - cv_uploads:/app/uploads/cv
+    networks:
+      - pfe-network
+
+  # ==========================================
+  # Angular Frontend (Nginx Reverse Proxy)
+  # ==========================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: pfe-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+      - "4200:80"
+    networks:
+      - pfe-network
+
+  # ==========================================
+  # phpMyAdmin (Visual Database Admin)
+  # ==========================================
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: pfe-phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+    ports:
+      - "8081:80"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - pfe-network
+
+volumes:
+  mysql_data:
+    name: pfe-mysql-data
+  cv_uploads:
+    name: pfe-cv-uploads
+
+networks:
+  pfe-network:
+    name: pfe-network
+    driver: bridge

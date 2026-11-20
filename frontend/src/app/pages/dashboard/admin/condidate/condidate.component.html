@@ -1,0 +1,26 @@
+<h1>List candidate</h1>
+
+<nz-table [nzScroll]="{ x: '1000px', y: '60vh' }" #middleTable nzSize="middle" [nzData]="data">
+  <thead>
+  <tr>
+    <th nzWidth="30px">id</th>
+    <th>First Name</th>
+    <th>Last Name</th>
+    <th>Phone</th>
+    <th>Email</th>
+    <th>Action</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let data of middleTable.data">
+    <td>{{ data.id }}</td>
+    <td>{{ data.firstname }}</td>
+    <td>{{ data.lastname }}</td>
+    <td>{{ data.phone }}</td>
+    <td>{{ data.email }}</td>
+    <td>
+      <button nz-button nzType="primary" (click)="showConfirm(data.id!)" nzDanger>Delete</button>
+    </td>
+  </tr>
+  </tbody>
+</nz-table>

@@ -1,0 +1,20 @@
+<app-header></app-header>
+<div class="container">
+  <div class="card">
+    <form nzLayout="vertical" nz-form [formGroup]="validateForm" class="login-form" (ngSubmit)="submitForm()">
+      <h1>OTP Validation</h1>
+      <nz-form-item>
+        <nz-form-label nzFor="otp" nzRequired>Enter sending OTP</nz-form-label>
+        <nz-form-control nzErrorTip="OTP is required.">
+          <nz-input-group >
+            <input id="otp" type="text" nz-input formControlName="userName" placeholder="######" />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+      <h4 style="color: blue;">Check your email!</h4>
+      <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'">Verify OTP</button>
+    </form>
+  </div>
+</div>
+<app-footer></app-footer>
+

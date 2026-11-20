@@ -1,0 +1,64 @@
+<div style="width: 100%; display:flex; justify-content: space-between; margin-bottom: 10px; margin-top: 40px;">
+
+<h1>Offer List</h1>
+
+<div>
+<nz-input-group [nzSuffix]="suffixIconSearch">
+  <input type="text" [(ngModel)]="searchtext" nz-input placeholder="Search" />
+</nz-input-group>
+<ng-template #suffixIconSearch>
+  <span nz-icon nzType="search"></span>
+</ng-template>
+</div>
+</div>
+
+<div class="container">
+  <div *ngFor="let job of jobListings|filter:searchtext" class="job-card" (click)="openDrawer(job)">
+    <nz-card nzTitle="{{ job.company }}">
+      <p><strong>Title</strong> {{ job.title }}</p>
+      <p><strong>Type</strong> {{ job.type }}</p>
+      <p><strong>Salary</strong> {{ job.salary }} {{job.unit}}/{{job.timeType}}</p>
+      <p><strong>Description</strong> {{ job.description }}</p>
+    </nz-card>
+  </div>
+</div>
+<nz-drawer *ngIf="authority === 'CANDIDATE'" [(nzVisible)]="drawerVisible" [nzTitle]="selectedJob?.company" (nzOnClose)="closeDrawer()">
+  <div *nzDrawerContent>
+    <p><strong>Title</strong> {{ selectedJob?.title }}</p>
+    <p><strong>Type</strong> {{ selectedJob?.type }}</p>
+    <p><strong>Salary</strong> {{ selectedJob?.salary }} {{selectedJob?.unit}}/{{selectedJob?.timeType}}</p>
+    <p><strong>Description</strong> {{ selectedJob?.description }}</p>
+
+    <form nz-form (ngSubmit)="submitApplication()" nzLayout="vertical">
+      <nz-form-item>
+        <nz-form-label [nzFor]="'message'">Cover Letter</nz-form-label>
+        <nz-form-control>
+          <textarea nz-input id="message" [(ngModel)]="message" name="message" required></textarea>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzFor]="'cv'" nzRequired>Upload CV <span style="margin-left: 5px; color: red;">(PDF Only)</span> </nz-form-label>
+        <nz-form-control>
+          <div class="file-upload" *ngIf="uploadedCV === null">
+            <label for="cv" class="file-upload-label">
+              <span class="plus-icon">+</span>
+            </label>
+            <input type="file" accept="application/pdf" id="cv" (change)="onFileChange($event)" style="display: none;" required />
+          </div>
+          <div *ngIf="uploadedCV !== null">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Icon_pdf_file.svg/1200px-Icon_pdf_file.svg.png" style="width: 30px; height: 50px; object-fit: contain;">
+            <div>{{ uploadedCV.name }}</div>
+            <button (click)="cancelFileSelection()">Cancel</button>
+            </div>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control>
+          <button type="submit" nz-button nzType="primary">Submit this offer</button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+</nz-drawer>
